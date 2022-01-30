@@ -1,15 +1,18 @@
-import { useState, useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
+import { useState, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import Overlay from "react-bootstrap/Overlay";
+import Tooltip from "react-bootstrap/Tooltip";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 
 const Product = ({ id, name, brand, type }) => {
   const [addedToCart, setAddedToCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const [err, setErr] = useState();
   const AuthValues = useContext(AuthContext);
+  const [error, setError] = useState();
   let navigate = useNavigate();
+  const target = useRef(null);
 
   const handleIncrement = () => {
     if (Number(quantity) < 100) {
@@ -24,29 +27,34 @@ const Product = ({ id, name, brand, type }) => {
   };
 
   const handleChange = (e) => {
-    if (/^\d+$/.test(e.target.value) || e.target.value === "") {
-      setErr("");
+    const isNumberRegex = /^\d+$/;
+    if (isNumberRegex.test(e.target.value)) {
+      setError("");
       setQuantity(Number(e.target.value));
     } else {
-      setErr("Enter a Number");
+      setError("Enter a Number");
     }
   };
 
   const addToCart = async () => {
     if (AuthValues.token) {
-      setErr("");
-      setAddedToCart(false);
-      const res = await fetch("http://localhost:3000/cart/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${AuthValues.token}`,
-        },
-        body: JSON.stringify({
-          productId: id,
-          quantity: quantity,
-        }),
-      });
+      if (quantity > 0) {
+        const res = await fetch("http://localhost:3000/cart/add", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${AuthValues.token}`,
+          },
+          body: JSON.stringify({
+            productId: id,
+            quantity: quantity,
+          }),
+        });
+        setAddedToCart(true);
+      } else {
+        setError("Quantity Cannot be Zero");
+        return;
+      }
     } else {
       AuthValues.setToken(null);
       AuthValues.setIsLoggedIn(false);
@@ -70,11 +78,23 @@ const Product = ({ id, name, brand, type }) => {
               -
             </button>
           </div>
-          {err && <h5 style={{ color: "red" }}>{err}</h5>}
-          <Button onClick={async () => await addToCart()}>Add to Cart</Button>
-          {addedToCart && (
-            <h5 style={{ color: "green" }}>Successfully Added to Your Cart!</h5>
-          )}
+          {error && <h5 style={{ color: "red" }}>{error}</h5>}
+          <Button ref={target} onClick={async () => await addToCart()}>
+            Add to Cart
+          </Button>
+
+          <Overlay
+            target={target.current}
+            show={addedToCart}
+            placement="right"
+            onEntered={() => setTimeout(() => setAddedToCart(false), 1000)}
+          >
+            {(props) => (
+              <Tooltip id="added-to-cart" {...props}>
+                Successfully Added to Cart!
+              </Tooltip>
+            )}
+          </Overlay>
         </Card.Subtitle>
       </Card.Body>
     </Card>

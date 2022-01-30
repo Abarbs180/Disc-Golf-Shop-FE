@@ -1,13 +1,13 @@
-import Button from "react-bootstrap/Button";
 import { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 
 const CartProduct = ({ id, product, brand, type, quantity, setCartItems }) => {
   const [newQuantity, setNewQuantity] = useState(quantity);
-  const [err, setErr] = useState();
   const AuthValues = useContext(AuthContext);
+  const [err, setErr] = useState();
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -37,6 +37,7 @@ const CartProduct = ({ id, product, brand, type, quantity, setCartItems }) => {
     }
   }
 
+  // TODO: Include handleIncrement, handle Decrement, and handleChange in utils
   const handleIncrement = () => {
     if (Number(newQuantity) < 100) {
       setNewQuantity(newQuantity + 1);

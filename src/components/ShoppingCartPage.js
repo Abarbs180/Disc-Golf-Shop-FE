@@ -1,6 +1,7 @@
-import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import LoadingIcon from "./LoadingIcon";
 import CartProduct from "./CartProduct";
 
 const ShoppingCartPage = () => {
@@ -8,6 +9,7 @@ const ShoppingCartPage = () => {
   let navigate = useNavigate();
 
   const [cartItems, setCartItems] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!AuthValues.token) {
@@ -24,6 +26,7 @@ const ShoppingCartPage = () => {
 
       const data = await res.json();
 
+      setIsLoading(false);
       setCartItems(data);
     }
     viewCart();
@@ -42,8 +45,11 @@ const ShoppingCartPage = () => {
   ));
 
   return (
+    // TODO: Cleanup
     <>
-      {cartContents.length ? (
+      {isLoading ? (
+        <LoadingIcon></LoadingIcon>
+      ) : cartContents.length ? (
         <>
           <h1>Cart</h1>
           {cartContents}

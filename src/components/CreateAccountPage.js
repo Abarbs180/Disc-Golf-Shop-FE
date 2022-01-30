@@ -44,7 +44,7 @@ const CreateAccountPage = () => {
 
     const loginData = await loginRes.json();
 
-    AuthValues.setToken(loginData);
+    AuthValues.setToken(loginData.token);
     AuthValues.setIsLoggedIn(true);
 
     navigate("/");
