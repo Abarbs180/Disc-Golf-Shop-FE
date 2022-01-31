@@ -15,7 +15,7 @@ const BrandsFilter = ({ onBrandSelect, value }) => {
   }, []);
 
   const brandFilter = brands.map((brand) => (
-    <option value={brand.name} key={brand.name}>
+    <option value={brand.id} key={brand.name}>
       {brand.name}
     </option>
   ));

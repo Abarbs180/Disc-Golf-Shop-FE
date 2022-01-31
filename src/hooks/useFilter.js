@@ -15,13 +15,13 @@ const useFilter = (products, productsFilter, brandsFilter, typesFilter) => {
 
     if (brandsFilter) {
       filteredProducts = filteredProducts.filter(
-        (product) => product.brand === brandsFilter
+        (product) => String(product.brand_id) === brandsFilter
       );
     }
 
     if (typesFilter) {
       filteredProducts = filteredProducts.filter(
-        (product) => product.type === typesFilter
+        (product) => String(product.type_id) === typesFilter
       );
     }
 

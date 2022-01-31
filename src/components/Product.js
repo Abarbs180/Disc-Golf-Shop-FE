@@ -1,18 +1,18 @@
-import { AuthContext } from "../contexts/AuthContext";
-import { useState, useContext, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
 import Overlay from "react-bootstrap/Overlay";
 import Tooltip from "react-bootstrap/Tooltip";
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
+import { useNavigate } from "react-router-dom";
+import { useState, useContext, useRef } from "react";
+import { AuthContext } from "../contexts/AuthContext";
 
 const Product = ({ id, name, brand, type }) => {
-  const [addedToCart, setAddedToCart] = useState(false);
-  const [quantity, setQuantity] = useState(1);
-  const AuthValues = useContext(AuthContext);
-  const [error, setError] = useState();
-  let navigate = useNavigate();
   const target = useRef(null);
+  let navigate = useNavigate();
+  const [error, setError] = useState();
+  const AuthValues = useContext(AuthContext);
+  const [quantity, setQuantity] = useState(1);
+  const [addedToCart, setAddedToCart] = useState(false);
 
   const handleIncrement = () => {
     if (Number(quantity) < 100) {

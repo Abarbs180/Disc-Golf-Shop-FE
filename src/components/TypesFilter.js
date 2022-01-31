@@ -15,7 +15,7 @@ const TypesFilter = ({ onTypeSelect, value }) => {
   }, []);
 
   const typeFilter = types.map((type) => (
-    <option value={type.name} key={type.name}>
+    <option value={type.id} key={type.name}>
       {type.name}
     </option>
   ));

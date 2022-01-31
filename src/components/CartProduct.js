@@ -7,11 +7,13 @@ import Card from "react-bootstrap/Card";
 const CartProduct = ({ id, product, brand, type, quantity, setCartItems }) => {
   const [newQuantity, setNewQuantity] = useState(quantity);
   const AuthValues = useContext(AuthContext);
-  const [err, setErr] = useState();
+  const [error, setError] = useState();
   let navigate = useNavigate();
 
   useEffect(() => {
-    if (newQuantity != quantity) {
+    if (!newQuantity) {
+      setNewQuantity(quantity);
+    } else if (newQuantity != quantity) {
       updateQuantity();
     }
     return;
@@ -37,7 +39,6 @@ const CartProduct = ({ id, product, brand, type, quantity, setCartItems }) => {
     }
   }
 
-  // TODO: Include handleIncrement, handle Decrement, and handleChange in utils
   const handleIncrement = () => {
     if (Number(newQuantity) < 100) {
       setNewQuantity(newQuantity + 1);
@@ -45,18 +46,19 @@ const CartProduct = ({ id, product, brand, type, quantity, setCartItems }) => {
   };
 
   const handleDecrement = () => {
-    if (newQuantity > 0) {
+    if (newQuantity > 1) {
       setNewQuantity(newQuantity - 1);
     }
   };
 
   const handleChange = (e) => {
-    if (/^\d+$/.test(e.target.value) || e.target.value === "") {
-      setErr("");
+    const isNumberRegex = /^\d+$/;
+    if (isNumberRegex.test(e.target.value)) {
+      setError("");
       setNewQuantity(Number(e.target.value));
     } else {
       setNewQuantity(quantity);
-      setErr("Enter a Number");
+      setError("Enter a Number");
     }
   };
 
@@ -105,7 +107,7 @@ const CartProduct = ({ id, product, brand, type, quantity, setCartItems }) => {
               -
             </button>
           </div>
-          {err && <h5 style={{ color: "red" }}>Enter a Number</h5>}
+          {error && <h5 style={{ color: "red" }}>Enter a Number</h5>}
         </Card.Subtitle>
       </Card.Body>
       <Button onClick={async () => removeFromCart()}>Remove From Cart</Button>

@@ -1,13 +1,14 @@
-import HomePage from "./components/HomePage";
-import ProductsPage from "./components/ProductsPage";
 import NavBar from "./components/NavBar";
-import CreateAccountPage from "./components/CreateAccountPage";
-import LoginPage from "./components/LoginPage";
-import ShoppingCartPage from "./components/ShoppingCartPage";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import HomePage from "./components/HomePage";
 import { useEffect, useContext } from "react";
+import LoginPage from "./components/LoginPage";
 import { AuthContext } from "./contexts/AuthContext";
+import ProductsPage from "./components/ProductsPage";
+import ShoppingCartPage from "./components/ShoppingCartPage";
 import checkIsTokenExpired from "./utils/checkIsTokenExpired";
+import CreateAccountPage from "./components/CreateAccountPage";
+import AdminProductsPage from "./components/AdminProductsPage";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
   const AuthValues = useContext(AuthContext);
@@ -37,6 +38,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/user/register" element={<CreateAccountPage />} />
+            <Route path="/admin/products" element={<AdminProductsPage />} />
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/user/login" element={<LoginPage />} />
             <Route path="/cart" element={<ShoppingCartPage />} />

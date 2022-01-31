@@ -1,18 +1,17 @@
-import { useState, useEffect } from "react";
-import useFilter from "../hooks/useFilter.js";
-import BrandsFilter from "./BrandsFilter.js";
-import TypesFilter from "./TypesFilter.js";
-import Form from "react-bootstrap/Form";
-import FormControl from "react-bootstrap/FormControl";
-import InputGroup from "react-bootstrap/InputGroup";
 import Product from "./Product.js";
+import Form from "react-bootstrap/Form";
+import TypesFilter from "./TypesFilter.js";
+import { useState, useEffect } from "react";
+import BrandsFilter from "./BrandsFilter.js";
+import useFilter from "../hooks/useFilter.js";
+import InputGroup from "react-bootstrap/InputGroup";
+import FormControl from "react-bootstrap/FormControl";
 
-// TODO: Fix issue of useEffect not populating productCards before products state initialization does
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
-  const [productsFilter, setProductsFilter] = useState("");
-  const [brandsFilter, setBrandsFilter] = useState("");
   const [typesFilter, setTypesFilter] = useState("");
+  const [brandsFilter, setBrandsFilter] = useState("");
+  const [productsFilter, setProductsFilter] = useState("");
   const filteredProducts = useFilter(
     products,
     productsFilter,

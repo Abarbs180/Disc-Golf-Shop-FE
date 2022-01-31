@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
 import { useContext } from "react";
+import { Link } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 
 const NavBar = () => {
@@ -15,9 +15,15 @@ const NavBar = () => {
             </Link>
           </li>
           <li className="nav-item">
-            <Link to="/products" className="item-link">
-              Products
-            </Link>
+            {AuthValues.role === "admin" ? (
+              <Link to="/admin/products" className="item-link">
+                Products
+              </Link>
+            ) : (
+              <Link to="/products" className="item-link">
+                Products
+              </Link>
+            )}
           </li>
           <li className="nav-item">Contact</li>
         </ul>
