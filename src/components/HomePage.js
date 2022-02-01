@@ -5,21 +5,27 @@ const HomePage = () => {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const getAllProducts = async () => {
+    const res = await fetch("http://localhost:3000/products");
+    const product = await res.json();
+    setProducts(product);
+    setIsLoading(false);
+  };
+
   useEffect(() => {
-    async function fetchData() {
-      const res = await fetch("http://localhost:3000/products");
-      const data = await res.json();
-      setProducts(data);
-      setIsLoading(false);
-    }
-    fetchData();
+    getAllProducts();
   }, []);
 
   return (
     <div>
       {isLoading && <LoadingIcon />}
       {!isLoading &&
-        products.map((product) => <div key={product.id}>{product.name}</div>)}
+        products.map(
+          (product) =>
+            product.availability === "In Stock" && (
+              <div key={product.id}>{product.name}</div>
+            )
+        )}
     </div>
   );
 };

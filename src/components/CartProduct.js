@@ -1,14 +1,14 @@
-import { useState, useEffect, useContext } from "react";
-import { AuthContext } from "../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
-import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
+import { useState, useEffect, useContext } from "react";
 
 const CartProduct = ({ id, product, brand, type, quantity, setCartItems }) => {
-  const [newQuantity, setNewQuantity] = useState(quantity);
-  const AuthValues = useContext(AuthContext);
-  const [error, setError] = useState();
   let navigate = useNavigate();
+  const [error, setError] = useState();
+  const AuthValues = useContext(AuthContext);
+  const [newQuantity, setNewQuantity] = useState(quantity);
 
   useEffect(() => {
     if (!newQuantity) {

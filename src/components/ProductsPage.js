@@ -19,6 +19,10 @@ const ProductsPage = () => {
     typesFilter
   );
 
+  useEffect(() => {
+    getAllProducts();
+  }, []);
+
   const submitSearch = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -41,25 +45,24 @@ const ProductsPage = () => {
     return;
   };
 
-  useEffect(() => {
-    async function fetchData() {
-      const res = await fetch("http://localhost:3000/products");
-      const product = await res.json();
-      setProducts(product);
-    }
+  const getAllProducts = async () => {
+    const res = await fetch("http://localhost:3000/products");
+    const product = await res.json();
+    setProducts(product);
+  };
 
-    fetchData();
-  }, []);
-
-  const productCards = filteredProducts.map((product) => (
-    <Product
-      key={product.id}
-      id={product.id}
-      name={product.name}
-      brand={product.brand}
-      type={product.type}
-    ></Product>
-  ));
+  const productCards = filteredProducts.map(
+    (product) =>
+      product.availability === "In Stock" && (
+        <Product
+          key={product.id}
+          id={product.id}
+          name={product.name}
+          brand={product.brand}
+          type={product.type}
+        ></Product>
+      )
+  );
 
   return (
     <>

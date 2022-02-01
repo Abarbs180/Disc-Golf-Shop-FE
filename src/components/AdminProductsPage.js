@@ -35,35 +35,38 @@ const AdminProductsPage = () => {
   };
 
   useEffect(() => {
-    async function fetchData() {
-      const res = await fetch("http://localhost:3000/products");
-      const product = await res.json();
-      setProducts(product);
-    }
-
-    fetchData();
+    getAllProducts();
   }, []);
 
-  const addProduct = async (e) => {
+  const getAllProducts = async () => {
+    const res = await fetch("http://localhost:3000/products");
+    const product = await res.json();
+    setProducts(product);
+  };
+
+  const addProduct = async () => {
     if (AuthValues.token) {
-      e.preventDefault();
-      const res = await fetch("http://localhost:3000/admin/addProduct", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${AuthValues.token}`,
-        },
-        body: JSON.stringify({
-          productName: productName,
-          brandId: brand,
-          typeId: type,
-        }),
-      });
+      if (productName && brand && type) {
+        const res = await fetch("http://localhost:3000/admin/addProduct", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${AuthValues.token}`,
+          },
+          body: JSON.stringify({
+            productName: productName,
+            brandId: brand,
+            typeId: type,
+          }),
+        });
 
-      const data = await res.json();
+        const data = await res.json();
 
-      if (data.error) {
-        setError(data.error);
+        if (data.error) {
+          setError(data.error);
+        }
+      } else {
+        setError("Enter All Product Information");
       }
     } else {
       AuthValues.setToken(null);
@@ -79,6 +82,7 @@ const AdminProductsPage = () => {
       name={product.name}
       brand={product.brand}
       type={product.type}
+      availability={product.availability}
     ></AdminProduct>
   ));
 
@@ -95,9 +99,7 @@ const AdminProductsPage = () => {
         {error && <h5 style={{ color: "red" }}>{error}</h5>}
         <BrandsFilter onBrandSelect={onBrandSelect} value={brand} />
         <TypesFilter onTypeSelect={onTypeSelect} value={type} />
-        <Button type="submit" onClick={addProduct}>
-          Add Product
-        </Button>
+        <Button onClick={addProduct}>Add Product</Button>
         {productCards}
       </Form>
     </>

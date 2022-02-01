@@ -1,12 +1,12 @@
-import { useState, useEffect, useContext } from "react";
-import { AuthContext } from "../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
 import LoadingIcon from "./LoadingIcon";
 import CartProduct from "./CartProduct";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
+import { useState, useEffect, useContext } from "react";
 
 const ShoppingCartPage = () => {
-  const AuthValues = useContext(AuthContext);
   let navigate = useNavigate();
+  const AuthValues = useContext(AuthContext);
 
   const [cartItems, setCartItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
