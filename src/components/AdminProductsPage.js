@@ -45,33 +45,35 @@ const AdminProductsPage = () => {
   };
 
   const addProduct = async () => {
-    if (AuthValues.token) {
-      if (productName && brand && type) {
-        const res = await fetch("http://localhost:3000/admin/addProduct", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${AuthValues.token}`,
-          },
-          body: JSON.stringify({
-            productName: productName,
-            brandId: brand,
-            typeId: type,
-          }),
-        });
-
-        const data = await res.json();
-
-        if (data.error) {
-          setError(data.error);
-        }
-      } else {
-        setError("Enter All Product Information");
-      }
-    } else {
+    if (!AuthValues.token) {
       AuthValues.setToken(null);
       AuthValues.setIsLoggedIn(false);
       navigate("/user/login");
+      return;
+    }
+
+    if (!productName || !brand || !type) {
+      setError("Enter All Product Information");
+      return;
+    }
+
+    const res = await fetch("http://localhost:3000/admin/addProduct", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${AuthValues.token}`,
+      },
+      body: JSON.stringify({
+        productName: productName,
+        brandId: brand,
+        typeId: type,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (data.error) {
+      setError(data.error);
     }
   };
 

@@ -8,8 +8,8 @@ const UpdateAvailability = ({ onUpdateAvailability, value }) => {
       aria-label="Default select example"
     >
       <option value="">Availability</option>
-      <option value="In Stock">In Stock</option>
-      <option value="Out of Stock">Out of Stock</option>
+      <option value="true">In Stock</option>
+      <option value="false">Out of Stock</option>
     </Form.Select>
   );
 };

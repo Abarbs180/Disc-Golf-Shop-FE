@@ -1,8 +1,9 @@
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
-import { useState, useEffect, useContext } from "react";
+import IncrementDecrementQuantity from "./IncrementDecrementQuantity";
 
 const CartProduct = ({ id, product, brand, type, quantity, setCartItems }) => {
   let navigate = useNavigate();
@@ -10,85 +11,79 @@ const CartProduct = ({ id, product, brand, type, quantity, setCartItems }) => {
   const AuthValues = useContext(AuthContext);
   const [newQuantity, setNewQuantity] = useState(quantity);
 
-  useEffect(() => {
-    if (!newQuantity) {
-      setNewQuantity(quantity);
-    } else if (newQuantity != quantity) {
-      updateQuantity();
+  async function updateQuantity(newQuantity) {
+    if (newQuantity > 100 || newQuantity <= 0) {
+      return;
     }
-    return;
-  }, [newQuantity]);
 
-  async function updateQuantity() {
-    if (AuthValues.token) {
-      const res = await fetch("http://localhost:3000/cart/updateQuantity", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${AuthValues.token}`,
-        },
-        body: JSON.stringify({
-          productId: id,
-          quantity: newQuantity,
-        }),
-      });
-    } else {
+    setNewQuantity(newQuantity);
+    if (!AuthValues.token) {
       AuthValues.setToken(null);
       AuthValues.setIsLoggedIn(false);
       navigate("/user/login");
     }
+
+    await fetch("http://localhost:3000/cart/updateQuantity", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${AuthValues.token}`,
+      },
+      body: JSON.stringify({
+        productId: id,
+        quantity: newQuantity,
+      }),
+    });
   }
 
   const handleIncrement = () => {
-    if (Number(newQuantity) < 100) {
-      setNewQuantity(newQuantity + 1);
-    }
+    setError("");
+    updateQuantity(newQuantity + 1);
   };
 
   const handleDecrement = () => {
-    if (newQuantity > 1) {
-      setNewQuantity(newQuantity - 1);
-    }
+    setError("");
+    updateQuantity(newQuantity - 1);
   };
 
   const handleChange = (e) => {
-    const isNumberRegex = /^\d+$/;
-    if (isNumberRegex.test(e.target.value)) {
+    const isWholeNumberRegex = /^[1-9]\d*$/;
+    if (isWholeNumberRegex.test(e.target.value)) {
       setError("");
-      setNewQuantity(Number(e.target.value));
+      updateQuantity(Number(e.target.value));
     } else {
-      setNewQuantity(quantity);
-      setError("Enter a Number");
+      setError("Enter a Nonzero Number");
     }
   };
 
   async function removeFromCart() {
-    if (AuthValues.token) {
-      const res = await fetch("http://localhost:3000/cart/remove", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${AuthValues.token}`,
-        },
-        body: JSON.stringify({ productId: id }),
-      });
-
-      if (res.ok) {
-        const res = await fetch("http://localhost:3000/cart", {
-          method: "GET",
-          headers: { Authorization: `Bearer ${AuthValues.token}` },
-        });
-
-        const data = await res.json();
-
-        setCartItems(data);
-      }
-    } else {
+    if (!AuthValues.token) {
       AuthValues.setToken(null);
       AuthValues.setIsLoggedIn(false);
       navigate("/user/login");
     }
+    const res = await fetch("http://localhost:3000/cart/remove", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${AuthValues.token}`,
+      },
+      body: JSON.stringify({ productId: id }),
+    });
+
+    if (res.ok) {
+      const res = await fetch("http://localhost:3000/cart", {
+        method: "GET",
+        headers: { Authorization: `Bearer ${AuthValues.token}` },
+      });
+
+      const data = await res.json();
+
+      setCartItems(data);
+    }
   }
+
+  const errorMessage = error && <h5 style={{ color: "red" }}>{error}</h5>;
 
   return (
     <Card style={{ width: "18rem" }} key={id}>
@@ -97,17 +92,13 @@ const CartProduct = ({ id, product, brand, type, quantity, setCartItems }) => {
         <Card.Subtitle className="mb-2 text-muted">{brand}</Card.Subtitle>
         <Card.Subtitle className="mb-2 text-muted">{type}</Card.Subtitle>
         <Card.Subtitle className="mb-2 text-muted">
-          <div className="form-control-check">
-            <h6 style={{ justifyContent: "spaceBetween" }}>QTY: </h6>
-            <button type="button" onClick={handleIncrement}>
-              +
-            </button>
-            <input type="text" value={newQuantity} onChange={handleChange} />
-            <button type="button" onClick={handleDecrement}>
-              -
-            </button>
-          </div>
-          {error && <h5 style={{ color: "red" }}>Enter a Number</h5>}
+          <IncrementDecrementQuantity
+            quantity={newQuantity}
+            handleChange={handleChange}
+            handleIncrement={handleIncrement}
+            handleDecrement={handleDecrement}
+          />
+          {errorMessage}
         </Card.Subtitle>
       </Card.Body>
       <Button onClick={async () => removeFromCart()}>Remove From Cart</Button>

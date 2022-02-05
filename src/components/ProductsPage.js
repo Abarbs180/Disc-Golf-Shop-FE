@@ -53,7 +53,7 @@ const ProductsPage = () => {
 
   const productCards = filteredProducts.map(
     (product) =>
-      product.availability === "In Stock" && (
+      product.availability && (
         <Product
           key={product.id}
           id={product.id}

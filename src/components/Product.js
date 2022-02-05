@@ -5,6 +5,7 @@ import Tooltip from "react-bootstrap/Tooltip";
 import { useNavigate } from "react-router-dom";
 import { useState, useContext, useRef } from "react";
 import { AuthContext } from "../contexts/AuthContext";
+import IncrementDecrementQuantity from "./IncrementDecrementQuantity";
 
 const Product = ({ id, name, brand, type }) => {
   const target = useRef(null);
@@ -15,52 +16,54 @@ const Product = ({ id, name, brand, type }) => {
   const [addedToCart, setAddedToCart] = useState(false);
 
   const handleIncrement = () => {
+    setError("");
     if (Number(quantity) < 100) {
       setQuantity(quantity + 1);
     }
   };
 
   const handleDecrement = () => {
+    setError("");
     if (Number(quantity) > 1) {
       setQuantity(quantity - 1);
     }
   };
 
   const handleChange = (e) => {
-    const isNumberRegex = /^\d+$/;
-    if (isNumberRegex.test(e.target.value)) {
+    const isWholeNumberRegex = /^[1-9]\d*$/;
+    if (isWholeNumberRegex.test(e.target.value)) {
       setError("");
       setQuantity(Number(e.target.value));
     } else {
-      setError("Enter a Number");
+      setError("Enter a Nonzero Number");
     }
   };
 
   const addToCart = async () => {
-    if (AuthValues.token) {
-      if (quantity > 0) {
-        const res = await fetch("http://localhost:3000/cart/add", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${AuthValues.token}`,
-          },
-          body: JSON.stringify({
-            productId: id,
-            quantity: quantity,
-          }),
-        });
-        setAddedToCart(true);
-      } else {
-        setError("Quantity Cannot be Zero");
-        return;
-      }
-    } else {
+    if (!AuthValues.token) {
       AuthValues.setToken(null);
       AuthValues.setIsLoggedIn(false);
       navigate("/user/login");
     }
+
+    const res = await fetch("http://localhost:3000/cart/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${AuthValues.token}`,
+      },
+      body: JSON.stringify({
+        productId: id,
+        quantity: quantity,
+      }),
+    });
+
+    if (res.ok) {
+      setAddedToCart(true);
+    }
   };
+
+  const errorMessage = error && <h5 style={{ color: "red" }}>{error}</h5>;
 
   return (
     <Card style={{ width: "18rem" }} key={id}>
@@ -69,20 +72,16 @@ const Product = ({ id, name, brand, type }) => {
         <Card.Subtitle className="mb-2 text-muted">{brand}</Card.Subtitle>
         <Card.Subtitle className="mb-2 text-muted">
           {type}
-          <div className="form-control-check">
-            <button type="button" onClick={handleIncrement}>
-              +
-            </button>
-            <input type="text" value={quantity} onChange={handleChange} />
-            <button type="button" onClick={handleDecrement}>
-              -
-            </button>
-          </div>
-          {error && <h5 style={{ color: "red" }}>{error}</h5>}
+          <IncrementDecrementQuantity
+            quantity={quantity}
+            handleChange={handleChange}
+            handleIncrement={handleIncrement}
+            handleDecrement={handleDecrement}
+          />
+          {errorMessage}
           <Button ref={target} onClick={async () => await addToCart()}>
             Add to Cart
           </Button>
-
           <Overlay
             target={target.current}
             show={addedToCart}

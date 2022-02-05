@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import LoadingIcon from "./LoadingIcon";
+import { useEffect, useState } from "react";
 
 const HomePage = () => {
   const [products, setProducts] = useState([]);
@@ -17,14 +17,13 @@ const HomePage = () => {
   }, []);
 
   return (
+    // TODO: Cleanup
     <div>
       {isLoading && <LoadingIcon />}
       {!isLoading &&
         products.map(
           (product) =>
-            product.availability === "In Stock" && (
-              <div key={product.id}>{product.name}</div>
-            )
+            product.availability && <div key={product.id}>{product.name}</div>
         )}
     </div>
   );

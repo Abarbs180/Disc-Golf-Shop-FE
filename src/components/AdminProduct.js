@@ -17,41 +17,44 @@ const AdminProduct = ({ id, name, brand, type, availability }) => {
   };
 
   const updateAvailability = async () => {
-    if (AuthValues.token) {
-      if (newAvailability && newAvailability != availability) {
-        const res = await fetch(
-          "http://localhost:3000/admin/updateAvailability",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${AuthValues.token}`,
-            },
-            body: JSON.stringify({
-              productName: name,
-              availability: newAvailability,
-            }),
-          }
-        );
-
-        if (res.ok) {
-          window.location.reload();
-        }
-      } else {
-        setError("Must Set a New Availability");
-      }
-    } else {
+    if (!AuthValues.token) {
       AuthValues.setToken(null);
       AuthValues.setIsLoggedIn(false);
       navigate("/user/login");
+      return;
+    }
+
+    const boolAvailability = newAvailability === "true";
+
+    if (!newAvailability || boolAvailability === availability) {
+      setError("Must Set a New Availability");
+      return;
+    }
+
+    const res = await fetch("http://localhost:3000/admin/updateAvailability", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${AuthValues.token}`,
+      },
+      body: JSON.stringify({
+        productName: name,
+        availability: boolAvailability,
+      }),
+    });
+
+    if (res.ok) {
+      window.location.reload();
     }
   };
+
+  const availabilityText = availability ? "In Stock" : "Out of Stock";
 
   return (
     <Card style={{ width: "18rem" }} key={id}>
       <Card.Body>
         <Card.Title>
-          {name} ({availability})
+          {name} ({availabilityText})
         </Card.Title>
         <Card.Subtitle className="mb-2 text-muted">{brand}</Card.Subtitle>
         <Card.Subtitle className="mb-2 text-muted">{type}</Card.Subtitle>
