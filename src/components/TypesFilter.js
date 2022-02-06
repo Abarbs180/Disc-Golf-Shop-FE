@@ -5,13 +5,13 @@ const TypesFilter = ({ onTypeSelect, value }) => {
   const [types, setTypes] = useState([]);
 
   useEffect(() => {
-    async function fetchData() {
+    async function getAllTypes() {
       const res = await fetch("http://localhost:3000/types");
       const type = await res.json();
       setTypes(type);
     }
 
-    fetchData();
+    getAllTypes();
   }, []);
 
   const typeFilter = types.map((type) => (

@@ -1,17 +1,17 @@
 import Form from "react-bootstrap/Form";
-import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Button from "react-bootstrap/Button";
 import { useState, useContext } from "react";
-import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
+import FloatingLabel from "react-bootstrap/FloatingLabel";
 
 const CreateAccountPage = () => {
+  let navigate = useNavigate();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState("");
   const AuthValues = useContext(AuthContext);
-  let navigate = useNavigate();
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   async function handleSubmit(e) {
     e.preventDefault();

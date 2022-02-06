@@ -25,7 +25,15 @@ const NavBar = () => {
               </Link>
             )}
           </li>
-          <li className="nav-item">Contact</li>
+          <li className="nav-item">
+            {AuthValues.role === "admin" ? (
+              <Link to="/admin/allUsers" className="item-link">
+                Users
+              </Link>
+            ) : (
+              "Contact"
+            )}
+          </li>
         </ul>
         <ul className="right-nav">
           {!AuthValues.isLoggedIn && (

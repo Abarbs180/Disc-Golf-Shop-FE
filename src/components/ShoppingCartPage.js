@@ -7,7 +7,6 @@ import { useState, useEffect, useContext } from "react";
 const ShoppingCartPage = () => {
   let navigate = useNavigate();
   const AuthValues = useContext(AuthContext);
-
   const [cartItems, setCartItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -44,21 +43,16 @@ const ShoppingCartPage = () => {
     ></CartProduct>
   ));
 
-  return (
-    // TODO: Cleanup
+  const displayedContents = cartContents.length ? (
     <>
-      {isLoading ? (
-        <LoadingIcon></LoadingIcon>
-      ) : cartContents.length ? (
-        <>
-          <h1>Cart</h1>
-          {cartContents}
-        </>
-      ) : (
-        <h2 style={{ textAlign: "center" }}>Your Cart is Empty</h2>
-      )}
+      <h1>Cart</h1>
+      {cartContents}
     </>
+  ) : (
+    <h2 style={{ textAlign: "center" }}>Your Cart is Empty</h2>
   );
+
+  return <>{isLoading ? <LoadingIcon /> : displayedContents}</>;
 };
 
 export default ShoppingCartPage;

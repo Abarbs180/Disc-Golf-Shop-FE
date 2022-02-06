@@ -9,6 +9,7 @@ import checkIsTokenExpired from "./utils/checkIsTokenExpired";
 import CreateAccountPage from "./components/CreateAccountPage";
 import AdminProductsPage from "./components/AdminProductsPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import AllUsersPage from "./components/AllUsersPage";
 
 function App() {
   const AuthValues = useContext(AuthContext);
@@ -39,6 +40,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/user/register" element={<CreateAccountPage />} />
             <Route path="/admin/products" element={<AdminProductsPage />} />
+            <Route path="/admin/allUsers" element={<AllUsersPage />} />
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/user/login" element={<LoginPage />} />
             <Route path="/cart" element={<ShoppingCartPage />} />

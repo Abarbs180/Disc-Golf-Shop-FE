@@ -5,13 +5,13 @@ const BrandsFilter = ({ onBrandSelect, value }) => {
   const [brands, setBrands] = useState([]);
 
   useEffect(() => {
-    async function fetchData() {
+    async function getBrands() {
       const res = await fetch("http://localhost:3000/brands");
       const brand = await res.json();
       setBrands(brand);
     }
 
-    fetchData();
+    getBrands();
   }, []);
 
   const brandFilter = brands.map((brand) => (

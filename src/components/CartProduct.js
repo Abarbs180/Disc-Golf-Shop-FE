@@ -11,31 +11,6 @@ const CartProduct = ({ id, product, brand, type, quantity, setCartItems }) => {
   const AuthValues = useContext(AuthContext);
   const [newQuantity, setNewQuantity] = useState(quantity);
 
-  async function updateQuantity(newQuantity) {
-    if (newQuantity > 100 || newQuantity <= 0) {
-      return;
-    }
-
-    setNewQuantity(newQuantity);
-    if (!AuthValues.token) {
-      AuthValues.setToken(null);
-      AuthValues.setIsLoggedIn(false);
-      navigate("/user/login");
-    }
-
-    await fetch("http://localhost:3000/cart/updateQuantity", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${AuthValues.token}`,
-      },
-      body: JSON.stringify({
-        productId: id,
-        quantity: newQuantity,
-      }),
-    });
-  }
-
   const handleIncrement = () => {
     setError("");
     updateQuantity(newQuantity + 1);
@@ -56,12 +31,40 @@ const CartProduct = ({ id, product, brand, type, quantity, setCartItems }) => {
     }
   };
 
-  async function removeFromCart() {
+  async function updateQuantity(newQuantity) {
+    if (newQuantity > 100 || newQuantity <= 0) {
+      return;
+    }
+
+    setNewQuantity(newQuantity);
+
     if (!AuthValues.token) {
       AuthValues.setToken(null);
       AuthValues.setIsLoggedIn(false);
       navigate("/user/login");
     }
+
+    await fetch("http://localhost:3000/cart/updateQuantity", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${AuthValues.token}`,
+      },
+      body: JSON.stringify({
+        productId: id,
+        quantity: newQuantity,
+      }),
+    });
+  }
+
+  async function removeFromCart() {
+    if (!AuthValues.token) {
+      AuthValues.setToken(null);
+      AuthValues.setIsLoggedIn(false);
+      navigate("/user/login");
+      return;
+    }
+
     const res = await fetch("http://localhost:3000/cart/remove", {
       method: "DELETE",
       headers: {

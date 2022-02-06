@@ -18,6 +18,10 @@ const AdminProductsPage = () => {
   const [products, setProducts] = useState([]);
   const [productName, setProductName] = useState();
 
+  useEffect(() => {
+    getAllProducts();
+  }, []);
+
   const submitProductName = (e) => {
     setError("");
     setProductName(e.target.value);
@@ -33,10 +37,6 @@ const AdminProductsPage = () => {
     setType(e.target.value);
     return;
   };
-
-  useEffect(() => {
-    getAllProducts();
-  }, []);
 
   const getAllProducts = async () => {
     const res = await fetch("http://localhost:3000/products");
@@ -88,6 +88,8 @@ const AdminProductsPage = () => {
     ></AdminProduct>
   ));
 
+  const errorMessage = error && <h5 style={{ color: "red" }}>{error}</h5>;
+
   return (
     <>
       <h1>Products</h1>
@@ -98,7 +100,7 @@ const AdminProductsPage = () => {
             onChange={submitProductName}
           />
         </InputGroup>
-        {error && <h5 style={{ color: "red" }}>{error}</h5>}
+        {errorMessage}
         <BrandsFilter onBrandSelect={onBrandSelect} value={brand} />
         <TypesFilter onTypeSelect={onTypeSelect} value={type} />
         <Button onClick={addProduct}>Add Product</Button>
