@@ -10,6 +10,7 @@ import CreateAccountPage from "./components/CreateAccountPage";
 import AdminProductsPage from "./components/AdminProductsPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AllUsersPage from "./components/AllUsersPage";
+import ReactivateAccountPage from "./components/ReactivateAccountPage";
 
 function App() {
   const AuthValues = useContext(AuthContext);
@@ -43,6 +44,10 @@ function App() {
             <Route path="/admin/allUsers" element={<AllUsersPage />} />
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/user/login" element={<LoginPage />} />
+            <Route
+              path="/user/reactivateAccount"
+              element={<ReactivateAccountPage />}
+            />
             <Route path="/cart" element={<ShoppingCartPage />} />
           </Routes>
         </div>

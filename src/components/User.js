@@ -18,7 +18,10 @@ const User = ({ id, email, active }) => {
 
     await fetch("http://localhost:3000/admin/toggleUserActivity", {
       method: "POST",
-      headers: { Authorization: `Bearer ${AuthValues.token}` },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${AuthValues.token}`,
+      },
       body: JSON.stringify({ id: id }),
     });
 

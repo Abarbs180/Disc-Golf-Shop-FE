@@ -5,32 +5,19 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 
-// TODO: Pass email as props to reactivate account page for greyed out email text field
-
-const LoginPage = () => {
+const ReactivateAccountPage = () => {
   let navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState("");
   const AuthValues = useContext(AuthContext);
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setErrors(null);
-
-    const getUser = await fetch("http://localhost:3000/user/getUserActivity", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: email,
-      }),
-    });
-
-    const userData = await getUser.json();
-
-    if (!userData.active) {
-      navigate("/user/reactivateAccount");
+    if (password !== confirmPassword) {
+      setErrors("Password and Confirm Password Do Not Match");
       return;
     }
 
@@ -50,15 +37,28 @@ const LoginPage = () => {
       return;
     }
 
+    await fetch("http://localhost:3000/user/reactivateAccount", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: email,
+      }),
+    });
+
     AuthValues.setToken(data.token);
     AuthValues.setIsLoggedIn(true);
 
     navigate("/");
-  }
+  };
 
   return (
     <Form onSubmit={handleSubmit}>
-      <h1>Login</h1>
+      <h1>Reactivate Account</h1>
+      <h5>
+        Your account has been deactivated by the admin due to prolonged
+        inactivity, please enter the correct information to reactivate your
+        account
+      </h5>
       <Form.Group>
         <FloatingLabel controlId="email" label="Email">
           <Form.Control
@@ -77,6 +77,14 @@ const LoginPage = () => {
             placeholder="Password"
           />
         </FloatingLabel>
+        <FloatingLabel controlId="confirm-password" label="Confirm Password">
+          <Form.Control
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="Confirm Password"
+          />
+        </FloatingLabel>
       </Form.Group>
       {errors && (
         <Form.Group>
@@ -85,9 +93,9 @@ const LoginPage = () => {
           </FloatingLabel>
         </Form.Group>
       )}
-      <Button type="submit">Login</Button>
+      <Button type="submit">Reactivate Account</Button>
     </Form>
   );
 };
 
-export default LoginPage;
+export default ReactivateAccountPage;
