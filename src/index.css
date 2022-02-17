@@ -79,3 +79,8 @@ nav {
   margin-bottom: 25px;
   color: red;
 }
+
+.verify-account {
+  text-align: center;
+  font-size: larger;
+}

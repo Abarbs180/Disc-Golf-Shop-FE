@@ -1,15 +1,14 @@
+import { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../contexts/AuthContext";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 
 const CreateAccountPage = () => {
   let navigate = useNavigate();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState("");
-  const AuthValues = useContext(AuthContext);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -20,6 +19,7 @@ const CreateAccountPage = () => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        name: name,
         email: email,
         password: password,
         confirmPassword: confirmPassword,
@@ -33,27 +33,21 @@ const CreateAccountPage = () => {
       return;
     }
 
-    const loginRes = await fetch("http://localhost:3000/user/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    });
-
-    const loginData = await loginRes.json();
-
-    AuthValues.setToken(loginData.token);
-    AuthValues.setIsLoggedIn(true);
-
-    navigate("/");
+    navigate("/user/verifyAccount");
   }
 
   return (
     <Form onSubmit={handleSubmit}>
       <h1>Create Account</h1>
       <Form.Group>
+        <FloatingLabel controlId="full-name" label="Full Name">
+          <Form.Control
+            type="full-name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Full Name"
+          />
+        </FloatingLabel>
         <FloatingLabel controlId="email" label="Email">
           <Form.Control
             value={email}

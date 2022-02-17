@@ -75,6 +75,8 @@ const AdminProductsPage = () => {
     if (data.error) {
       setError(data.error);
     }
+
+    window.location.reload(false);
   };
 
   const productCards = products.map((product) => (

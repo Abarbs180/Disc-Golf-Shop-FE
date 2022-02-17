@@ -1,25 +1,21 @@
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const ReactivateAccountPage = () => {
   let navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const { state } = useLocation();
   const [errors, setErrors] = useState("");
   const AuthValues = useContext(AuthContext);
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const email = state?.email;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (password !== confirmPassword) {
-      setErrors("Password and Confirm Password Do Not Match");
-      return;
-    }
 
     const res = await fetch("http://localhost:3000/user/login", {
       method: "POST",
@@ -63,8 +59,10 @@ const ReactivateAccountPage = () => {
         <FloatingLabel controlId="email" label="Email">
           <Form.Control
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
+            placeholder={email}
+            type="text"
+            disabled
+            readOnly
           />
         </FloatingLabel>
       </Form.Group>
@@ -75,14 +73,6 @@ const ReactivateAccountPage = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
-          />
-        </FloatingLabel>
-        <FloatingLabel controlId="confirm-password" label="Confirm Password">
-          <Form.Control
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Confirm Password"
           />
         </FloatingLabel>
       </Form.Group>

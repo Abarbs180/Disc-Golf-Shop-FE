@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 
-// TODO: Pass email as props to reactivate account page for greyed out email text field
+// TODO: Prohibit login if user does not have verified = true
 
 const LoginPage = () => {
   let navigate = useNavigate();
@@ -17,7 +17,7 @@ const LoginPage = () => {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    setErrors(null);
+    setErrors("");
 
     const getUser = await fetch("http://localhost:3000/user/getUserActivity", {
       method: "POST",
@@ -30,7 +30,7 @@ const LoginPage = () => {
     const userData = await getUser.json();
 
     if (!userData.active) {
-      navigate("/user/reactivateAccount");
+      navigate("/user/reactivateAccount", { state: { email: email } });
       return;
     }
 

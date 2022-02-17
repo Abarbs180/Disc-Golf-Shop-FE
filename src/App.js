@@ -3,13 +3,14 @@ import HomePage from "./components/HomePage";
 import { useEffect, useContext } from "react";
 import LoginPage from "./components/LoginPage";
 import { AuthContext } from "./contexts/AuthContext";
+import AllUsersPage from "./components/AllUsersPage";
 import ProductsPage from "./components/ProductsPage";
 import ShoppingCartPage from "./components/ShoppingCartPage";
 import checkIsTokenExpired from "./utils/checkIsTokenExpired";
 import CreateAccountPage from "./components/CreateAccountPage";
 import AdminProductsPage from "./components/AdminProductsPage";
+import VerifyAccountPage from "./components/VerifyAccountPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import AllUsersPage from "./components/AllUsersPage";
 import ReactivateAccountPage from "./components/ReactivateAccountPage";
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/user/register" element={<CreateAccountPage />} />
+            <Route path="/user/verifyAccount" element={<VerifyAccountPage />} />
             <Route path="/admin/products" element={<AdminProductsPage />} />
             <Route path="/admin/allUsers" element={<AllUsersPage />} />
             <Route path="/products" element={<ProductsPage />} />

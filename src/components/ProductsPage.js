@@ -24,14 +24,8 @@ const ProductsPage = () => {
   }, []);
 
   const submitSearch = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      setProductsFilter(e.target.value);
-    }
-
-    if (!e.target.value) {
-      setProductsFilter("");
-    }
+    e.preventDefault();
+    setProductsFilter(e.target.value);
     return;
   };
 
@@ -69,7 +63,7 @@ const ProductsPage = () => {
       <h1>Products</h1>
       <Form>
         <InputGroup style={{ zIndex: 0 }}>
-          <FormControl placeholder="Search Products" onKeyDown={submitSearch} />
+          <FormControl placeholder="Search Products" onChange={submitSearch} />
         </InputGroup>
         <BrandsFilter onBrandSelect={onBrandSelect} value={brandsFilter} />
         <TypesFilter onTypeSelect={onTypeSelect} value={typesFilter} />
